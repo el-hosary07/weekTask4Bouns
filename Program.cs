@@ -1,73 +1,74 @@
-﻿using System.Xml.Linq;
+using System.Xml.Linq;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace weekTask4Bouns
 {
-    class School 
+    class School
     {
-        List<Student> students ;
+        List<Student> students;
         List<Course> courses;
         List<Instructor> instructors;
 
         public School()
         {
-           students = new() ;
-           courses = new() ;
-           instructors = new() ;
+            students = new();
+            courses = new();
+            instructors = new();
         }
 
         public virtual bool AddStudent(Student s)
         {
+            
             foreach (var student in students)
             {
-                if (student != s)
+                if (student.StudentId == s.StudentId)
                 {
-                    students.Add(s);
-
-                    return true;
+                    return false; 
                 }
-                
             }
-            return false;
+                        
+            students.Add(s);
+            return true;
         }
         public virtual bool AddCourse(Course c)
         {
             foreach (var course in courses)
             {
-                if (course != c )
+                if (course.CourseId == c.CourseId)
                 {
-                    courses.Add(c);
-
-                    return true;
+                    return false; 
                 }
-
             }
-            return false;
-           
+
+            courses.Add(c); 
+            return true;
+
+
         }
         public virtual bool AddInstructor(Instructor i)
         {
             foreach (var instructor in instructors)
             {
-                if (instructor != i)
+                if (instructor.InstructorId == i.InstructorId)
                 {
-                    instructors.Add(i);
-
-                    return true;
+                    return false;
                 }
 
             }
-            return false;
+            instructors.Add(i);
+
+            return true;
+
         }
 
         public virtual Student? FindStudent(int sId)
         {
             foreach (var item in students)
             {
-                if(item.StudentId == sId)
+                if (item.StudentId == sId)
                     return item;
 
-                
+
             }
             return null;
 
@@ -95,15 +96,15 @@ namespace weekTask4Bouns
 
         }
 
-        public bool EnrollStudentInCourse(int sId , int cId)
+        public bool EnrollStudentInCourse(int sId, int cId)
         {
-            foreach(var student in students)
+            foreach (var student in students)
             {
-                if(student.StudentId==sId)
+                if (student.StudentId == sId)
                 {
-                    foreach(var cours in courses)
+                    foreach (var cours in courses)
                     {
-                        if (cours.CourseId==cId)
+                        if (cours.CourseId == cId)
                         {
                             student.AddCourse(cours);
                             return true;
@@ -111,11 +112,13 @@ namespace weekTask4Bouns
                         }
 
 
-                    }return false;
-                    
+                    }
+                    return false;
+
                 }
-            }return false;
-        
+            }
+            return false;
+
 
         }
 
@@ -124,7 +127,7 @@ namespace weekTask4Bouns
             return "";
         }
 
-        
+
 
 
 
@@ -163,8 +166,8 @@ namespace weekTask4Bouns
         public override string PrintDetails()
         {
             string result = "";
-            
-            
+
+
             result += $" Student ID: {StudentId} ,Student Name: {Name} ,Student Age: {Age} \n";
 
             foreach (Course course in courses)
@@ -184,11 +187,11 @@ namespace weekTask4Bouns
 
         Instructor instructor;
 
-        public Course(int courseId, string title) 
+        public Course(int courseId, string title)
         {
             CourseId = courseId;
             Title = title;
-            
+
         }
         public override bool AddInstructor(Instructor i)
         {
@@ -200,7 +203,7 @@ namespace weekTask4Bouns
             string result = "";
 
 
-            result += $" Course ID: {CourseId} ,Course Name: {Title} , Instructor : {instructor.Name} \n";
+            result += $" Course ID: {CourseId} ,Course Name: {Title}  \n";
             result += "================================ \n";
 
             return result;
@@ -227,7 +230,7 @@ namespace weekTask4Bouns
 
             result += $" Instructor ID: {InstructorId} ,Instructor Name: {Name} ,Instructor Specialization: {Specialization} \n";
             result += "================================ \n";
-            
+
 
             return result;
 
@@ -239,7 +242,7 @@ namespace weekTask4Bouns
     {
         static void Main(string[] args)
         {
-
+            School school = new School();
             List<Student> students = new List<Student>();
             List<Course> courses = new List<Course>();
             List<Instructor> instructors = new List<Instructor>();
@@ -247,66 +250,100 @@ namespace weekTask4Bouns
             do
             {
 
-                Console.WriteLine("1. Add Student (hint: start with empty list of courses)\r\n2. Add Instructor\r\n3. Add Course (hint: select the instructor by id)\r\n4. Enroll Student in Course\r\n5. Show All Students\r\n6. Show All Courses\r\n7. Show All Instructors\r\n8. Find the student by id or name\r\n9. Fine the course by id or name\r\n10. Exit");
-                customerString = Console.ReadLine().ToUpper();
-
-
-
-
-
+                Console.WriteLine("" +
+                    "1. Add Student \r\n" +
+                    "2. Add Instructor\r\n" +
+                    "3. Add Course \r\n" +
+                    "4. Enroll Student in Course\r\n" +
+                    "5. Show All Students\r\n" +
+                    "6. Show All Courses\r\n" +
+                    "7. Show All Instructors\r\n" +
+                    "8. Find the student by id or name\r\n" +
+                    "9. Fine the course by id or name\r\n" +
+                    "10. Exit");
+                customerString = Console.ReadLine();
 
                 switch (customerString)
                 {
                     case "1":
                         Console.WriteLine("inter ID");
-                        int sid =Convert.ToInt32(Console.ReadLine()) ;                                  
+                        int sid = Convert.ToInt32(Console.ReadLine());
                         Console.WriteLine("inter Name");
-                        string sname =Console.ReadLine();                                  
+                        string sname = Console.ReadLine();
                         Console.WriteLine("inter age");
-                        int sage = Convert.ToInt32(Console.ReadLine());   
-                        
-                        students.Add( new Student(sid,sage,sname) );
+                        int sage = Convert.ToInt32(Console.ReadLine());
+
+                        Student s =new Student(sid, sage, sname);
+                        students.Add(s);
+                        school.AddStudent(s);
+                        Student itemStudentt = school.FindStudent(sid);
+                        if (itemStudentt != null)
+                        {
+                            Console.WriteLine(itemStudentt.PrintDetails());
+                        }
+                        else
+                        {
+                            Console.WriteLine("Student not found.");
+                        }
+
 
                         break;
 
                     case "2":
                         Console.WriteLine("inter ID");
-                        int cid = Convert.ToInt32(Console.ReadLine());
-                        Console.WriteLine("inter Tital");
-                        string cname = Console.ReadLine();
-                        
+                        int iId = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("inter Name");
+                        string iName = Console.ReadLine();
+                        Console.WriteLine("inter Specialization");
+                        string iS = Console.ReadLine();
 
-                        courses.Add(new Course(cid,cname));
+                        Instructor ins = new Instructor(iId, iName, iS);
+                        instructors.Add(ins);
+                        school.AddInstructor(ins);
+                        
 
 
                         break;
 
                     case "3":
                         Console.WriteLine("inter ID");
-                        int iId = Convert.ToInt32(Console.ReadLine());
-                        Console.WriteLine("inter Name");
-                        string iName = Console.ReadLine();
-                        Console.WriteLine("inter age");
-                        string iS = Console.ReadLine();
+                        int cid = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("inter Tital");
+                        string cname = Console.ReadLine();
 
-                        instructors.Add(new Instructor(iId,iName,iS));
+                        Course c = new Course(cid, cname);
+                        courses.Add(c);
+                        school.AddCourse(c);
+
                         break;
                     case "4":
-                        
+
+
+                        Console.WriteLine("inter student id ");
+                        int studentId = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("inter couers id ");
+                        int courseId = Convert.ToInt32(Console.ReadLine());
+
+                        school.EnrollStudentInCourse(studentId, courseId);
+
+
+
+
+
                         break;
                     case "5":
 
-                       for (int i = 0;i<students.Count;i++)
+                        for (int i = 0; i < students.Count; i++)
                         {
                             Console.WriteLine(students[i].Name);
                             Console.WriteLine(students[i].StudentId);
                             Console.WriteLine(students[i].Age);
-                            Console.WriteLine( "________________________________________" );
-                        }    
+                            Console.WriteLine("________________________________________");
+                        }
 
                         break;
 
-                    case "6"://the smallest number
+                    case "6":
                         for (int i = 0; i < courses.Count; i++)
                         {
                             Console.WriteLine(courses[i].Title);
@@ -317,17 +354,55 @@ namespace weekTask4Bouns
 
                         break;
                     case "7":
-                        
+                        for (int i = 0; i < instructors.Count; i++)
+                        {
+                            Console.WriteLine(instructors[i].Name);
+                            Console.WriteLine(instructors[i].InstructorId);
+                            Console.WriteLine(instructors[i].Specialization);
+                            Console.WriteLine("________________________________________");
+                        }
                         break;
                     case "8":
+
                         
+                        Console.WriteLine("inter student id ");
+                        int foundStudent =Convert.ToInt32(Console.ReadLine());
+                       Student itemStudent= school.FindStudent(foundStudent) ;
+                        if (itemStudent != null)
+                        {
+                            Console.WriteLine(itemStudent.PrintDetails());
+                        }
+                        else
+                        {
+                            Console.WriteLine("Student not found.");
+                        }
+
+
+
+
                         break;
                     case "9":
-                        
+                        Console.WriteLine("inter Course id ");
+                        int foundCourse= Convert.ToInt32(Console.ReadLine());
+                       Course itemCourse= school.FindCourse(foundCourse) ;
+
+                        if (itemCourse!=null)
+                        {
+                            Console.WriteLine(itemCourse.PrintDetails());
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("course not found.");
+
+                        }
+
                         break;
                     case "10"://Quit
 
-                        
+                        students.Clear();
+                        courses.Clear();
+                        instructors.Clear();
                         Console.WriteLine("Goodbye");
 
                         break;
@@ -340,6 +415,8 @@ namespace weekTask4Bouns
                 }
 
             } while (customerString != "10");
+
+
         }
     }
 
@@ -349,6 +426,6 @@ namespace weekTask4Bouns
 
 
 }
-    
 
- 
+
+
